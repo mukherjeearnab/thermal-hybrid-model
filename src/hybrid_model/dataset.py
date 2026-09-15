@@ -106,12 +106,23 @@ def build_dataset(config: Config) -> pd.DataFrame:
 def train_validation_split(
     df: pd.DataFrame, validation_fraction: float, seed: int
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Deterministically split a dataset into train/validation subsets."""
-    rng = np.random.default_rng(seed)
-    indices = rng.permutation(len(df))
-    n_val = int(round(len(df) * validation_fraction))
-    val_idx = indices[:n_val]
-    train_idx = indices[n_val:]
-    train_df = df.iloc[np.sort(train_idx)].reset_index(drop=True)
-    val_df = df.iloc[np.sort(val_idx)].reset_index(drop=True)
+    """Split a dataset into train/validation subsets.
+
+    Splits chronologically: the first ``(1 - validation_fraction)`` of the
+    (time-ordered) rows are used for training, and the remaining, later
+    rows are held out as validation. This means validation covers a
+    genuinely unseen time range rather than being interspersed samples
+    from the same trajectory the model trained on.
+
+    Args:
+        df: Dataset, assumed already sorted (or sortable) by ``time``.
+        validation_fraction: Fraction of rows (from the end) held out.
+        seed: Unused for the chronological split; kept for interface
+            compatibility with earlier random-split behavior.
+    """
+    df_sorted = df.sort_values("time").reset_index(drop=True)
+    n_val = int(round(len(df_sorted) * validation_fraction))
+    n_train = len(df_sorted) - n_val
+    train_df = df_sorted.iloc[:n_train].reset_index(drop=True)
+    val_df = df_sorted.iloc[n_train:].reset_index(drop=True)
     return train_df, val_df
