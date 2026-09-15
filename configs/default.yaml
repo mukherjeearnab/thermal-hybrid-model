@@ -1,0 +1,56 @@
+project:
+  name: openmodelica-pytorch-residual-hybrid
+  seed: 42
+
+simulation:
+  fmu_path: artifacts/fmu/ThermalPlant.fmu
+  start_time: 0.0
+  stop_time: 1000.0
+  step_size: 0.1
+  initial_temperature: 25.0
+  input_variables:
+    power: power
+    ambient: ambient
+  output_variables:
+    temperature: temperature
+
+thermal_model:
+  R: 0.5
+  C: 100.0
+  T_start: 25.0
+
+synthetic_system:
+  R_true: 0.5
+  C_true: 100.0
+  nonlinear_coefficient: 0.002
+  noise_std: 0.1
+
+data:
+  raw_path: data/raw/synthetic_measurements.csv
+  processed_path: data/processed/residual_dataset.csv
+  validation_fraction: 0.2
+
+model:
+  input_features:
+    - temperature_sim
+    - power
+    - ambient
+  hidden_sizes:
+    - 32
+    - 32
+  activation: tanh
+  output_size: 1
+
+training:
+  epochs: 200
+  batch_size: 64
+  learning_rate: 0.001
+  weight_decay: 0.0
+  checkpoint_path: artifacts/checkpoints/residual_model.pt
+  normalization_path: artifacts/checkpoints/normalization.json
+  train_loss_path: artifacts/metrics/train_loss.csv
+  val_loss_path: artifacts/metrics/val_loss.csv
+
+results:
+  inference_path: results/hybrid_predictions.csv
+  plot_path: results/plots/temperature_comparison.png

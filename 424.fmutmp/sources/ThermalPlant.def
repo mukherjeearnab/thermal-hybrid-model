@@ -1,0 +1,54 @@
+EXPORTS
+  ;***************************************************
+  ;Common Functions
+  ;****************************************************
+  ThermalPlant_fmiGetTypesPlatform @1
+  ThermalPlant_fmiGetVersion @2
+  ThermalPlant_fmiSetDebugLogging @3
+  ThermalPlant_fmiInstantiate @4
+  ThermalPlant_fmiFreeInstance @5
+  ThermalPlant_fmiSetupExperiment @6
+  ThermalPlant_fmiEnterInitializationMode @7
+  ThermalPlant_fmiExitInitializationMode @8
+  ThermalPlant_fmiTerminate @9
+  ThermalPlant_fmiReset @10
+  ThermalPlant_fmiGetReal @11
+  ThermalPlant_fmiGetInteger @12
+  ThermalPlant_fmiGetBoolean @13
+  ThermalPlant_fmiGetString @14
+  ThermalPlant_fmiSetReal @15
+  ThermalPlant_fmiSetInteger @16
+  ThermalPlant_fmiSetBoolean @17
+  ThermalPlant_fmiSetString @18
+  ThermalPlant_fmiGetFMUstate @19
+  ThermalPlant_fmiSetFMUstate @20
+  ThermalPlant_fmiFreeFMUstate @21
+  ThermalPlant_fmiSerializedFMUstateSize @22
+  ThermalPlant_fmiSerializeFMUstate @23
+  ThermalPlant_fmiDeSerializeFMUstate @24
+  ThermalPlant_fmiGetDirectionalDerivative @25
+  ;***************************************************
+  ;Functions for FMI for Model Exchange
+  ;****************************************************
+  ThermalPlant_fmiEnterEventMode @26
+  ThermalPlant_fmiNewDiscreteStates @27
+  ThermalPlant_fmiEnterContinuousTimeMode @28
+  ThermalPlant_fmiCompletedIntegratorStep @29
+  ThermalPlant_fmiSetTime @30
+  ThermalPlant_fmiSetContinuousStates @31
+  ThermalPlant_fmiGetDerivatives @32
+  ThermalPlant_fmiGetEventIndicators @33
+  ThermalPlant_fmiGetContinuousStates @34
+  ThermalPlant_fmiGetNominalsOfContinuousStates @35
+  ;***************************************************
+  ;Functions for FMI for Co-Simulation
+  ;****************************************************
+  ThermalPlant_fmiSetRealInputDerivatives @36
+  ThermalPlant_fmiGetRealOutputDerivatives @37
+  ThermalPlant_fmiDoStep @38
+  ThermalPlant_fmiCancelStep @39
+  ThermalPlant_fmiGetStatus @40
+  ThermalPlant_fmiGetRealStatus @41
+  ThermalPlant_fmiGetIntegerStatus @42
+  ThermalPlant_fmiGetBooleanStatus @43
+  ThermalPlant_fmiGetStringStatus @44

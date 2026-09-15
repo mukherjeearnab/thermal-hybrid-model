@@ -1,0 +1,27 @@
+{"format":"Transformational debugger info","version":1,
+"info":{"name":"ThermalPlant","description":"Simple first-order lumped thermal model: C*dT/dt = P - (T-Ta)/R"},
+"variables":{
+"$outputAlias_temperature":{"comment":"Simulated temperature [degC]","kind":"state","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"/home/arnab/Projects/openmodelica-pytorch-hybrid/modelica/ThermalPlant.mo","lineStart":19,"lineEnd":20,"colStart":3,"colEnd":35}},"index":0},
+"der($outputAlias_temperature)":{"comment":"der(Simulated temperature [degC])","kind":"derivative","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"/home/arnab/Projects/openmodelica-pytorch-hybrid/modelica/ThermalPlant.mo","lineStart":19,"lineEnd":20,"colStart":3,"colEnd":35}},"index":1},
+"$temperature_der":{"comment":"","kind":"variable","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"","lineStart":0,"lineEnd":0,"colStart":0,"colEnd":0}},"index":2},
+"ambient":{"comment":"Ambient temperature [degC]","kind":"variable","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"/home/arnab/Projects/openmodelica-pytorch-hybrid/modelica/ThermalPlant.mo","lineStart":16,"lineEnd":17,"colStart":3,"colEnd":33}},"index":3},
+"power":{"comment":"Applied power [W]","kind":"variable","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"/home/arnab/Projects/openmodelica-pytorch-hybrid/modelica/ThermalPlant.mo","lineStart":13,"lineEnd":14,"colStart":3,"colEnd":24}},"index":4},
+"temperature":{"comment":"Simulated temperature [degC]","kind":"variable","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"/home/arnab/Projects/openmodelica-pytorch-hybrid/modelica/ThermalPlant.mo","lineStart":19,"lineEnd":20,"colStart":3,"colEnd":35}},"index":5},
+"ambient":{"comment":"Ambient temperature [degC]","kind":"variable","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"/home/arnab/Projects/openmodelica-pytorch-hybrid/modelica/ThermalPlant.mo","lineStart":16,"lineEnd":17,"colStart":3,"colEnd":33}},"index":0},
+"power":{"comment":"Applied power [W]","kind":"variable","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"/home/arnab/Projects/openmodelica-pytorch-hybrid/modelica/ThermalPlant.mo","lineStart":13,"lineEnd":14,"colStart":3,"colEnd":24}},"index":1},
+"C":{"comment":"Thermal capacitance [J/K]","kind":"parameter","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"/home/arnab/Projects/openmodelica-pytorch-hybrid/modelica/ThermalPlant.mo","lineStart":7,"lineEnd":8,"colStart":3,"colEnd":32}},"index":0},
+"R":{"comment":"Thermal resistance [K/W]","kind":"parameter","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"/home/arnab/Projects/openmodelica-pytorch-hybrid/modelica/ThermalPlant.mo","lineStart":4,"lineEnd":5,"colStart":3,"colEnd":31}},"index":1},
+"T_start":{"comment":"Initial temperature [degC]","kind":"parameter","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"/home/arnab/Projects/openmodelica-pytorch-hybrid/modelica/ThermalPlant.mo","lineStart":10,"lineEnd":11,"colStart":3,"colEnd":33}},"index":2}
+},
+"equations":[{"eqIndex":0,"tag":"dummy"},
+{"eqIndex":1,"section":"initial","tag":"assign","defines":["temperature"],"uses":["T_start"],"equation":["T_start"],"source":{"info":{"file":"/home/arnab/Projects/openmodelica-pytorch-hybrid/modelica/ThermalPlant.mo","lineStart":23,"lineEnd":23,"colStart":3,"colEnd":24}}},
+{"eqIndex":2,"section":"initial","tag":"assign","defines":["$outputAlias_temperature"],"uses":["temperature"],"equation":["temperature"],"source":{"info":{"file":"","lineStart":0,"lineEnd":0,"colStart":0,"colEnd":0}}},
+{"eqIndex":3,"tag":"alias","equation":[5],"section":"initial"},
+{"eqIndex":4,"tag":"alias","equation":[6],"section":"initial"},
+{"eqIndex":5,"section":"regular","tag":"assign","defines":["$temperature_der"],"uses":["$outputAlias_temperature","C","R","ambient","power"],"equation":["(power + (ambient - $outputAlias_temperature) / R) / C"],"source":{"info":{"file":"/home/arnab/Projects/openmodelica-pytorch-hybrid/modelica/ThermalPlant.mo","lineStart":26,"lineEnd":26,"colStart":3,"colEnd":61}}},
+{"eqIndex":6,"section":"regular","tag":"assign","defines":["der($outputAlias_temperature)"],"uses":["$temperature_der"],"equation":["$temperature_der"],"source":{"info":{"file":"","lineStart":0,"lineEnd":0,"colStart":0,"colEnd":0}}},
+{"eqIndex":7,"section":"regular","tag":"assign","defines":["temperature"],"uses":["$outputAlias_temperature"],"equation":["$outputAlias_temperature"],"source":{"info":{"file":"","lineStart":0,"lineEnd":0,"colStart":0,"colEnd":0}}}
+],
+"functions":[
+]
+}
