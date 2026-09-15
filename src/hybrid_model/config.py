@@ -53,6 +53,8 @@ class SyntheticSystemConfig:
     C_true: float
     nonlinear_coefficient: float
     noise_std: float
+    power_schedule: list | None = None
+    ambient_schedule: list | None = None
 
 
 @dataclass
@@ -174,6 +176,8 @@ def load_config(config_path: str | Path, root: str | Path | None = None) -> Conf
             C=float(_require(thermal_raw, "C", "thermal_model")),
             T_start=float(_require(thermal_raw, "T_start", "thermal_model")),
         )
+        power_schedule_raw = synth_raw.get("power_schedule")
+        ambient_schedule_raw = synth_raw.get("ambient_schedule")
         synthetic_system = SyntheticSystemConfig(
             R_true=float(_require(synth_raw, "R_true", "synthetic_system")),
             C_true=float(_require(synth_raw, "C_true", "synthetic_system")),
@@ -181,6 +185,12 @@ def load_config(config_path: str | Path, root: str | Path | None = None) -> Conf
                 _require(synth_raw, "nonlinear_coefficient", "synthetic_system")
             ),
             noise_std=float(_require(synth_raw, "noise_std", "synthetic_system")),
+            power_schedule=[tuple(bp) for bp in power_schedule_raw]
+            if power_schedule_raw
+            else None,
+            ambient_schedule=[tuple(bp) for bp in ambient_schedule_raw]
+            if ambient_schedule_raw
+            else None,
         )
         data = DataConfig(
             raw_path=root / _require(data_raw, "raw_path", "data"),

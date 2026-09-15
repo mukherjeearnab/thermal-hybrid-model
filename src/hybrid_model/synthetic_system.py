@@ -30,6 +30,21 @@ class SyntheticSystemParams:
     T_start: float = 25.0
 
 
+def _piecewise_constant(time: np.ndarray, breakpoints: list[tuple[float, float]]) -> np.ndarray:
+    """Evaluate a piecewise-constant signal defined by (time, value) breakpoints.
+
+    Each breakpoint's value holds until the next breakpoint's time. Values
+    before the first breakpoint use the first breakpoint's value.
+    """
+    breakpoints = sorted(breakpoints, key=lambda bp: bp[0])
+    bp_times = np.array([bp[0] for bp in breakpoints])
+    bp_values = np.array([bp[1] for bp in breakpoints])
+    # index of the last breakpoint <= each sample time
+    idx = np.searchsorted(bp_times, time, side="right") - 1
+    idx = np.clip(idx, 0, len(bp_values) - 1)
+    return bp_values[idx]
+
+
 def make_input_trajectory(
     start_time: float,
     stop_time: float,
@@ -37,6 +52,8 @@ def make_input_trajectory(
     ambient: float = 25.0,
     power_step_time: float = 20.0,
     power_after_step: float = 50.0,
+    power_schedule: list[tuple[float, float]] | None = None,
+    ambient_schedule: list[tuple[float, float]] | None = None,
 ) -> pd.DataFrame:
     """Create a reproducible piecewise-constant power/ambient trajectory.
 
@@ -44,16 +61,32 @@ def make_input_trajectory(
         start_time: Simulation start time [s].
         stop_time: Simulation stop time [s].
         step_size: Time increment between samples [s].
-        ambient: Constant ambient temperature [degC].
-        power_step_time: Time at which power steps up [s].
-        power_after_step: Applied power after the step [W].
+        ambient: Constant ambient temperature [degC], used when
+            ``ambient_schedule`` is not given.
+        power_step_time, power_after_step: Legacy single-step interface,
+            used when ``power_schedule`` is not given (kept for backward
+            compatibility / the ThermalPlantTest scenario).
+        power_schedule: Optional list of ``(time, power)`` breakpoints for
+            an arbitrarily complex up/down power profile, e.g.
+            ``[(0, 0), (20, 50), (50, 20), (70, 60), (90, 10)]``.
+        ambient_schedule: Optional list of ``(time, ambient)`` breakpoints,
+            for a time-varying ambient temperature.
 
     Returns:
         DataFrame with columns ``time``, ``power``, ``ambient``.
     """
     time = np.arange(start_time, stop_time + step_size / 2, step_size)
-    power = np.where(time < power_step_time, 0.0, power_after_step)
-    ambient_arr = np.full_like(time, ambient)
+
+    if power_schedule is not None:
+        power = _piecewise_constant(time, power_schedule)
+    else:
+        power = np.where(time < power_step_time, 0.0, power_after_step)
+
+    if ambient_schedule is not None:
+        ambient_arr = _piecewise_constant(time, ambient_schedule)
+    else:
+        ambient_arr = np.full_like(time, ambient)
+
     return pd.DataFrame({"time": time, "power": power, "ambient": ambient_arr})
 
 
@@ -102,6 +135,8 @@ def generate_synthetic_dataset(
     params: SyntheticSystemParams,
     seed: int = 42,
     add_noise: bool = True,
+    power_schedule: list[tuple[float, float]] | None = None,
+    ambient_schedule: list[tuple[float, float]] | None = None,
 ) -> pd.DataFrame:
     """Generate a reproducible synthetic measurement dataset.
 
@@ -120,7 +155,13 @@ def generate_synthetic_dataset(
     """
     rng = np.random.default_rng(seed)
 
-    trajectory = make_input_trajectory(start_time, stop_time, step_size)
+    trajectory = make_input_trajectory(
+        start_time,
+        stop_time,
+        step_size,
+        power_schedule=power_schedule,
+        ambient_schedule=ambient_schedule,
+    )
     temperature_true = simulate_true_system(trajectory, params)
 
     if add_noise and params.noise_std > 0:

@@ -52,12 +52,17 @@ def build_dataset(config: Config) -> pd.DataFrame:
         T_start=config.simulation.initial_temperature,
     )
 
+    power_schedule = getattr(config.synthetic_system, "power_schedule", None)
+    ambient_schedule = getattr(config.synthetic_system, "ambient_schedule", None)
+
     measured = generate_synthetic_dataset(
         start_time=config.simulation.start_time,
         stop_time=config.simulation.stop_time,
         step_size=config.simulation.step_size,
         params=synth_params,
         seed=config.project.seed,
+        power_schedule=power_schedule,
+        ambient_schedule=ambient_schedule,
     )
 
     config.data.raw_path.parent.mkdir(parents=True, exist_ok=True)

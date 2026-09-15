@@ -7,7 +7,7 @@ model ThermalPlant
   parameter Real C = 100.0
     "Thermal capacitance [J/K]";
 
-  parameter Real T_start = 25.0
+  parameter Real T_start = 1000.0
     "Initial temperature [degC]";
 
   input Real power

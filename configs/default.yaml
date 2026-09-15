@@ -5,8 +5,8 @@ project:
 simulation:
   fmu_path: artifacts/fmu/ThermalPlant.fmu
   start_time: 0.0
-  stop_time: 1000.0
-  step_size: 0.1
+  stop_time: 300.0
+  step_size: 0.01
   initial_temperature: 25.0
   input_variables:
     power: power
@@ -23,7 +23,21 @@ synthetic_system:
   R_true: 0.5
   C_true: 100.0
   nonlinear_coefficient: 0.002
-  noise_std: 0.1
+  noise_std: 0.5
+  # Optional: replace the single power step with an arbitrary up/down
+  # profile as a list of [time, power] breakpoints (each value holds
+  # until the next breakpoint's time). Comment out to fall back to the
+  # legacy single-step profile (0 W -> 50 W at t=20s).
+  power_schedule:
+    - [0, 20]      # start cold
+    - [10, 1000]    # ramp up
+    - [20, 60]    # cool back down
+    - [60, 2000]    # heat up further
+    - [80, 5]     # cool down again
+  # Optional, same idea, for a time-varying ambient temperature:
+  # ambient_schedule:
+  #   - [0, 25]
+  #   - [50, 30]
 
 data:
   raw_path: data/raw/synthetic_measurements.csv
@@ -42,7 +56,7 @@ model:
   output_size: 1
 
 training:
-  epochs: 200
+  epochs: 5
   batch_size: 64
   learning_rate: 0.001
   weight_decay: 0.0
